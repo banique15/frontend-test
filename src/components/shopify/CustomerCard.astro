@@ -1,0 +1,10 @@
+// /src/components/CustomerCard.astro
+---
+// Props definition
+const { customer } = Astro.props;
+---
+<article>
+  <h3>{customer.firstName} {customer.lastName}</h3>
+  <p>Email: {customer.email}</p>
+  <!-- Display other customer details as needed -->
+</article>

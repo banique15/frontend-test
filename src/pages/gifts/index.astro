@@ -1,0 +1,63 @@
+---
+import { getProducts, searchProducts } from "./../../utils/shopify";
+import BaseLayout from "../../layout/BaseLayout.astro";
+import Products from "../../components/shopify/Products.astro";
+import { setCache } from "../../utils/cache";
+
+
+const title = "Astro + Shopify";
+const headers = Astro.request.headers;
+const ip = headers.get("x-vercel-forwarded-for");
+
+let products;
+
+const form_data = Astro.url.searchParams;
+
+const sanitizeInput = function sanitizeInput(input) {
+    // Escape HTML special characters
+    input = input.replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#x27;")
+                 .replace(/\//g, "&#x2F;");
+    
+    return input;
+}
+
+const validateSortBy = sortBy => {
+    // Define an array of allowed sort by options
+  const allowedSortByOptions = ['title-ascending', 'title-descending', 'price-ascending', 'price-descending', 'manual', 'created-ascending', 'created-descending', 'best-selling','descending'];
+
+    // Check if the provided sortBy parameter is included in the allowed options
+    if (allowedSortByOptions.includes(sortBy)) {
+        return sortBy; // Return the sortBy parameter if it's valid
+    } else {
+        return null; // Return null if sortBy parameter is not valid
+    }
+};
+
+if(form_data.toString()!==''){
+const search = sanitizeInput(form_data.get("search")); // Sanitize input to prevent injection   
+const sort_by = validateSortBy(form_data.get("sort_by")); // Validate sort_by parameter   
+// Implement rate limiting here
+    products = await searchProducts({ query: search, limit: 10, buyerIP: ip, sort_by: sort_by });
+}else{
+    products = await getProducts({  buyerIP: ip });
+}
+
+setCache.short(Astro);
+
+const accesstoken = Astro.cookies.get('sf-access-token')?.value ?? '0';
+console.log("shopify access token:"+ accesstoken);
+---
+   
+<BaseLayout title={title}>
+  <Products products={products} form_data={form_data}  />
+</BaseLayout>
+
+<style>
+    :global(body) {
+      background-color: white;
+    }
+  </style>

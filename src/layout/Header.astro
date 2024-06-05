@@ -1,0 +1,46 @@
+---
+const { isLoggedIn } = Astro.locals
+
+import Logo from './header/Logo.astro';
+import Nav from './header/Nav.astro';
+import Search from './header/Search.tsx';
+import UserMenu from './header/UserMenu.astro';
+import Donate from './header/Donate.astro';
+import ProgramsNav from './header/ProgramsNav.astro';
+import TopBar from './header/TopBar.astro';
+import Facebook from '../icons/Facebook.astro'
+import Instagram from '../icons/Instagram.astro'
+
+---
+
+<div class="fixed flex z-50 w-full flex-col top-0 start-0 bg-white shadow">
+
+  <TopBar />
+
+  <div class="flex bg-white items-center justify-between w-full shadow -mt-0 -mb-0 px-1 md:px-4">
+
+    <div class="flex flex-row w-1/2 items-center justify-start">
+      <Logo />
+      <Nav />
+      <div class="hidden md:block">
+        <Search client:load/>
+      </div>
+    </div>
+
+    <div class="flex flex-row space-x-3 md:space-x-9 w-1/2 mr-1 items-center justify-end">
+      <div class="flex flex-row space-x-2 md:space-x-3">
+        <Facebook />
+        <Instagram />
+      </div>
+
+      {isLoggedIn ? <UserMenu /> : <div class="md:border-r md:border-l text-sm px-0 md:px-4 border-gray-200"><a href="/login">Login</a></div>}
+
+      <Donate />
+    </div>
+
+  </div>
+
+  <ProgramsNav />
+
+</div>
+

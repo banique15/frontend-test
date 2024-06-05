@@ -1,0 +1,392 @@
+---
+import { audiences, subscribers } from '../../pages/mailchimp/mcfunctions';
+import { subResponses, audienceSelected } from '../../pages/utility/responses';
+
+
+if(Astro.request.method == "POST"){
+    const aud = await Astro.request.formData();
+    const audience = aud.get("audience");
+    audienceSelected.set(audience);
+}
+
+let audienceID = audienceSelected.get();
+let data = await subscribers(audienceID);
+let data1 = await audiences();
+let msg_text = '';
+let isSuccess = false;
+let subformBackResponse = subResponses.get().success;
+
+if(subformBackResponse){
+  isSuccess = true;
+  msg_text =  subResponses.get().message;
+}
+
+subResponses.set({'success':false,'message':''});
+
+
+---
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #F1F1F1;
+}
+tr:nth-child(even) {
+  background-color: #F9F9F9;
+}
+tr:hover {
+  background-color: #E7F4F9;
+}
+.checkbox {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  th, td {
+    display: block;
+    width: 100%;
+  }
+  th {
+    background-color: #ccc;
+  }
+}
+.list-container, .form-content {
+  text-align: left;
+  margin-top: 140px;
+}
+.button {
+  padding: 10px 15px;
+  margin: 0 10px 10px;
+  cursor: pointer;
+}
+.create-campaign {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.delete {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd; 
+}
+.delete-button  {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd;  
+  padding: 5px 10px;
+}
+.edit-button{
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.edit-button:hover {
+  background-color: #4CAF50;
+  color: #fff;
+}
+.delete:hover {
+  background-color: #fff;
+  color: red;
+}
+.deleteform {
+  width: 500px;
+  margin: 0px auto;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding:20px;
+}
+/* Header styles */
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: bold; /* This makes the text bold */
+  font-size: 28px; /* Adjust the size as needed */
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.form-group label {
+  width: 5%; /* Adjust the width as needed */
+  min-width:  90px; /* Adjust minimum width as needed */
+  margin-right: 10px; /* Provides a small space between label and input field */
+}
+.form-group .input-group {
+  width: 78%; /* Adjust the width as needed */
+  display: flex;
+}
+/* Adjust the input and textarea width */
+.form-content select,
+.form-content input[type="text"],
+.form-content input[type="email"],
+.form-content input[type="date"],
+.form-content input[type="time"],
+.form-content textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-group {
+  display: flex;
+  align-items: center; /* This will vertically align the label and input/button */
+  margin-bottom: 20px; /* Spacing between form groups */
+}
+.form-group label {
+  margin-right: 10px; /* Spacing between label and input/button */
+  white-space: nowrap; /* Prevents the label from wrapping */
+}
+.input-group {
+  display: flex;
+  flex-grow: 1; /* Allows the input group to fill the space */
+}
+.input-group input[type="text"] {
+  flex-grow: 1; /* Allows the input to grow and fill the space */
+  margin-right: 10px; /* Spacing between input and button */
+}
+/* Button styles */
+.form-content button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #4caf50; /* Neutral grey background */
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* Larger font size for readability */
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  color: #000; /* Make sure this color stands out against the background */
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #fff; /* This should contrast with the modal background */
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); /* Adds a shadow for better visibility */
+  z-index: 10; /* Make sure this is above the modal's z-index */
+}
+.close-button:hover {
+  color: #555; /* Change color on hover for visual feedback */
+}
+.browse-image-button {
+  background-color: #4CAF50; /* Change this to the color you want */
+  color: #fff; /* And this to the text color you want */
+  /* Add any other styles you want here */
+}
+th, td {
+    vertical-align: middle;
+  }
+  /* Centered class */
+  .centered {
+    text-align: center;
+  }
+  /* Add additional CSS here for styling */
+.button.create-campaign {
+  margin: 0px 0px 50px;
+}
+.button.submit-button {
+  margin: 0px 0px 50px; 
+}
+.msg {
+  border: 0; 
+  color:#fff;
+  padding:5px 20px;   
+  border-radius:5px; 
+  margin-bottom: 30px;
+}
+</style>
+<div x-data="{ createOpen: false, listOpen: true, editOpen: false, deleteOpen : false }"> <!-- initiate data -->
+  <!-- show list if return listOpen true -->
+  <div class="list-container" x-show="listOpen">
+       {isSuccess == true && 
+        
+        <div class="msg"  style={isSuccess == true?"background:green":"background:red" }   >{msg_text}</div>
+      
+      }
+      <button class="button create-campaign" @click="{ createOpen = true, listOpen = false, editOpen = false, deleteOpen = false }">Add</button>
+      
+     
+      <div>
+        <form id="audience_select" method="post">
+          <label for="audience">Select audience:</label><br>
+          <select id="audience" name="audience">
+            {data1.map((list) => (
+              list.id === audienceID ? <option selected value={list.id}>{list.name}</option> : <option  value={list.id}>{list.name}</option>
+            ))}
+          </select>
+        </form>
+      
+      </div>
+      <div>
+  <script>
+    document.getElementById('audience').addEventListener('change', function() {
+      document.getElementById('audience_select').submit();
+    });
+  </script>
+</div>
+      <table>
+          <tr>
+              <th>Email Address</th>
+              <th>Full Name</th>
+              <th>status</th>
+              <th></th>
+          </tr>
+          <!-- Add rows here for each campaign -->
+          {
+              data.map((list,index)=>(
+              <tr key={list.id}>
+                  <td>{list.email_address}</td>
+                  <td>{list.full_name}</td>
+                  <td>{list.status}</td>
+                  <td>
+                      <!-- delete button for campaign -->
+                      <button @click={`
+                        id = '${list.id}', 
+                        email_address='${list.email_address}',
+                        full_name='${list.full_name}'
+                        deletekey = ${index},
+                        deleteOpen = true,
+                        createOpen = false, 
+                        listOpen = false,  
+                        editOpen = false`} 
+                      class="delete-button mx-2"  style="float: right;">Delete</button>
+                      <!-- edit button for campaign -->
+                      <button @click={`
+                       id='${list.id}', 
+                       title='${list.email_address}',
+                       full_name='${list.full_name}',
+                       status='${list.status}',
+                       fname='${list.merge_fields.FNAME}',
+                       lname='${list.merge_fields.LNAME}',
+                       email_address='${list.email_address}',
+                       createOpen = false, 
+                       listOpen = false,  
+                       editOpen= true, 
+                       editkey='${index}' `} 
+                       class="edit-button" style="float: right;">Edit</button>
+                  </td>   
+              </tr>
+              ))
+          }
+      </table>
+  </div>
+ 
+  <!-- show update if return editOpen true -->
+  <div class="form-content" id="editOpen" x-show="editOpen">
+      <h2>Update Subscriber</h2>
+      <form id="editCampaignForm"  action="/mailchimp/subscribers" method="post">
+        <!--
+        <div class="form-group">
+          <label for="email_address">Email Address</label>
+          <input type="text" id="email_address" name="email_address" x-model="email_address" placeholder="Enter Email Address">
+        </div>
+        -->
+        <div class="form-group">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="fname" x-model="fname" placeholder="Enter first name">
+        </div>
+        <div class="form-group">
+          <label for="lname">Last Name</label>
+          <input type="text" id="lname" name="lname" x-model="lname" placeholder="Enter last name">
+        </div>
+        
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" x-model="status">
+                <option value="subscribed">subscribed</option>
+                <option value="unsubscribed">unsubscribed</option>
+                <option value="cleaned">cleaned</option>
+                <option value="pending">pending</option>
+                <option value="transactional">transactional</option>
+                <option value="archived">archived</option>
+            </select>
+        </div>
+        
+        <input type="hidden" id="id" name="id"  x-model="id" >
+        <input type="hidden" id="email_address" name="email_address"  x-model="email_address" >
+        <input type="hidden" id="action" name="action"  value='update'>
+        <button class="button create-campaign" @click="{ createOpen = false, listOpen = true, editOpen = false, deleteOpen = false  }">Back to Subscriber List</button>
+        <button type="submit" class="button submit-button">Submit</button>
+      </form>
+  </div>
+  <!-- show update if return delete true -->
+  <div class="form-content" x-show="deleteOpen">
+      <div class="deleteform">
+        <h2>Delete Subscriber</h2>
+        <form id="deleteForm" action="/mailchimp/subscribers" method="post">
+          <p>Are you sure you want to delete subcriber <b><span x-text="full_name"></span></b>, with email <b><span x-text="email_address"></span></b>? </p>
+          <br /><br />
+          <input type="hidden" id="id" name="id"  x-model="id" >
+          <input type="hidden" id="email_address" name="email_address"  x-model="email_address" >
+          <input type="hidden" id="full_name" name="full_name"  x-model="full_name" >
+          <input type="hidden" id="action" name="action"  value='delete'>
+          <button class="button delete-campaign" @click="{ createOpen = false, listOpen = true, editOpen = false, deleteOpen = false }">Back to Subscriber List</button>
+          <button type="submit" class="button submit-button">Submit</button>
+        </form>
+      </div>
+  </div>
+  <!-- show create if return createOpen true -->
+  <div class="form-content" x-show="createOpen">
+      <h2>Add Subscriber</h2>
+      <form id="createCampaignForm" action="/mailchimp/subscribers" method="post">
+      <div class="form-group">
+          <label for="email_address">Email Address</label>
+          <input type="text" id="email_address" required name="email_address" placeholder="Enter email address">
+        </div>
+        <div class="form-group">
+          <label for="full_name">First Name</label>
+          <input type="text" id="fname" required name="fname" placeholder="Enter first name">
+        </div>
+        <div class="form-group">
+          <label for="full_name">Last Name</label>
+          <input type="text" id="lname" required name="lname" placeholder="Enter last name">
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+          <select id="status" required name="status">
+              <option value="subscribed">subscribed</option>
+              <option value="unsubscribed">unsubscribed</option>
+              <option value="cleaned">cleaned</option>
+              <option value="pending">pending</option>
+              <option value="transactional">transactional</option>
+              <option value="archived">archived</option>
+          </select>
+        </div>
+        <input type="hidden" id="action" name="action"  value='create'>
+        <button class="button create-campaign" @click="{  createOpen = false, listOpen = true, editOpen = false, deleteOpen = false  }">Back to Subscriber List</button>
+        <button type="submit" class="button submit-button">Submit</button>
+      </form>
+  </div>
+</div>
+<script>
+// JavaScript to toggle the selection of all campaign checkboxes
+    const selectAllCheckbox = document.getElementById('selectAllCampaigns');
+    var campaignCheckboxes = document.querySelectorAll('.campaign-checkbox');
+    
+    selectAllCheckbox.addEventListener("click", function() {
+      alert();
+    });
+</script>

@@ -1,0 +1,96 @@
+---
+import { register } from 'swiper/element/bundle';
+register();
+
+const response = await fetch("https://vsiuakofodgkhmclfvpl.supabase.co/graphql/v1",
+  {
+    method: 'POST',
+    headers: {'Content-Type':'application/json', "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzaXVha29mb2Rna2htY2xmdnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk2NTg5OTgsImV4cCI6MjAxNTIzNDk5OH0.ty_9mqxxjK9itXEBCLrFzgtng1tFQGBMRLSwodeGzVk"},
+    body: JSON.stringify({
+      query: `
+        query {
+          newsCollection(orderBy: {news_date: DescNullsLast}, first:8) {
+            edges {
+              node {
+                id
+                news_title
+                news_content
+                news_image
+                news_date
+                news_url
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+      },
+    }),
+  });
+
+const json = await response.json();
+const news = json.data.newsCollection.edges.map(edge => edge.node);
+---
+
+<div class="p-6 px-2 lg:px-4 flex items-center justify-between sm:flex sm:items-center sm:justify-between">
+		<h2 class="pl-1 text-2xl font-bold md:text-2xl text-black">Featured News</h2>
+		<div class="right-0 flex sm:ml-4 sm:mt-0">
+			<a href="/news"><button type="button"
+					class="inline-flex items-center px-3 py-2 ml-3 text-sm font-semibold text-white rounded-full shadow-sm bg-harmony hover:bg-harmony focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-harmony">View
+					All</button></a>
+		</div>
+</div>
+
+<div class="max-w-full p-4 bg-white ">
+<swiper-container mousewheel="true" keyboard="true">
+  {news.map((news, index) => (
+    <swiper-slide key={index}>
+      <a href={`news/${news.news_url}`} class="p-0">
+        <div class="border-0">
+          <div
+            class="flex h-72 items-end shadow-2xl rounded-lg p-0 justify-start"
+            style={{ backgroundImage: `url(${news.news_image})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          >
+            <div class="flex justify-end w-full rounded-b-lg bg-black bg-opacity-50">
+              <span class="text-xl font-semibold p-4 text-white font-shadow">{news.news_title}</span>
+            </div>
+          </div>
+        </div>
+      </a>
+    </swiper-slide>
+  ))}
+</swiper-container>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+<script>
+    const swiperEl = document.querySelector('swiper-container')
+  if (swiperEl) {
+    Object.assign(swiperEl, {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 12,
+        },
+        768: {
+          slidesPerView: 4,
+          spaceBetween: 12,
+          mousewheel: true,
+          keyboard: true,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 12,
+          mousewheel: true,
+          keyboard: true,
+        },
+      },
+    });
+    swiperEl.initialize();
+  }
+  </script>

@@ -1,0 +1,80 @@
+
+  ---
+
+  ---
+  <div class="flex items-center bg-gray-50 z-40 justify-start overflow-x-hidden border-y border-gray-100 hide-scrollbar sm:justify-start lg:justify-center">
+      <div id="primary-nav" class="flex px-2 my-1 space-x-2 sm:px-6 lg:px-6 whitespace-nowrap no-scrollbar">
+        <a href="/pianos">
+            <button
+              id="pianos" 
+              class="nav-button px-4 py-1 text-sm font-medium transition-all duration-250 ease-in-out transform border border-solid rounded-full nav-button border-opacity-40 bg-opacity-10 
+              bg-harmony border-harmony text-harmony
+              hover:bg-opacity-100 hover:text-white"
+            >
+              Sing for Hope Pianos
+            </button>
+        </a>
+        <a href="/education">
+          <button
+              id="education" 
+              class="
+              px-4 py-1 text-sm font-medium transition-all duration-250 ease-in-out transform border border-solid rounded-full nav-button border-opacity-40 bg-opacity-10 
+              bg-melody border-melody text-melody
+              hover:bg-opacity-100 hover:text-white"
+            >
+              Education
+            </button>
+        </a>
+        <a href="health">
+          <button
+              id="health" 
+              class="
+              px-4 py-1 text-sm font-medium transition-all duration-250 ease-in-out transform border border-solid rounded-full nav-button border-opacity-40 bg-opacity-10 
+              bg-rhythm border-rhythm text-rhythm
+              hover:bg-opacity-100 hover:text-white"
+            >
+              Public Health & Wellness
+            </button>
+        </a>
+        <a href="diplomacy">
+          <button
+              id="diplomacy" 
+              class="
+              px-4 py-1 text-sm font-medium transition-all duration-250 ease-in-out transform border border-solid rounded-full nav-button border-opacity-40 bg-opacity-10 
+              bg-sonata border-sonatadark text-sonatadark
+              hover:bg-opacity-100 hover:text-white"
+            >
+              Cultural Diplomacy
+            </button>
+        </a>
+        <a href="workforce">
+          <button
+              id="workforce" 
+              class="
+              px-4 py-1 text-sm font-medium transition-all duration-250 ease-in-out transform border border-solid rounded-full nav-button border-opacity-40 bg-opacity-10 
+              bg-symphony border-symphony text-symphony
+              hover:bg-opacity-100 hover:text-white"
+            >
+              Creative Workforce Development
+            </button>
+        </a>
+      </div>
+  </div>
+
+
+<script >
+  const currentPath = window.location.pathname;
+  const navButtons = document.querySelectorAll('#primary-nav button');
+
+  navButtons.forEach((button) => {
+    const buttonPath = button.parentElement.getAttribute('href');
+
+    if (currentPath.includes(buttonPath)) {
+      button.classList.add('bg-opacity-100', 'text-white');
+    }
+    
+    else {
+      button.classList.add('opacity-50', 'hover:opacity-100' );
+    }
+  });
+</script>

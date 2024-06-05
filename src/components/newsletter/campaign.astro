@@ -1,0 +1,906 @@
+---
+import { campaigns, audiences } from '../../pages/mailchimp/mcfunctions';
+import { camResponses } from '../../pages/utility/responses';
+import TinyMCE from './tinymce.jsx';
+import client from '../../pages/mailchimp/client';
+let  data = await campaigns();
+let msg_text = '';
+let isSuccess = false;
+let listOfAudiences = await audiences();
+
+let camformBackResponse = camResponses.get().success;
+if(camformBackResponse){
+  isSuccess = true;
+  msg_text =  camResponses.get().message;
+}
+
+camResponses.set({'success':false,'message':''});
+
+---
+
+<style>
+@import url("https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css");
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+/* Custom width for Title column */
+th:nth-child(1), td:nth-child(1) {
+  width: 30%; /* Adjust this value as needed to make the title column wider */
+}
+
+/* Custom width for Campaign Type column */
+th:nth-child(2), td:nth-child(2) {
+  width: 25%; /* Adjust based on your needs */
+}
+
+/* Custom width for Status column */
+th:nth-child(3), td:nth-child(3) {
+  width: 25%; /* Adjust based on your needs */
+}
+
+/* Custom width for the Actions column */
+th:nth-child(4), td:nth-child(4) {
+  width: 20%; /* Adjust this to make the column narrower */
+}
+th {
+  background-color: #F1F1F1;
+}
+tr:nth-child(even) {
+  background-color: #F9F9F9;
+}
+tr:hover {
+  background-color: #E7F4F9;
+}
+/* Add right margin to the Manage button */
+.manage-button {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px; /* Adjust this value as needed */
+}
+
+/* Alternatively, add left margin to the Delete button */
+.delete-button {
+  padding: 5px 10px;
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  margin-left: 10px; /* Adjust this value as needed */
+}
+
+.checkbox {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  th, td {
+    display: block;
+    width: 100%;
+  }
+  th {
+    background-color: #ccc;
+  }
+}
+.list-container, .form-content {
+  text-align: left;
+  margin-top: 140px;
+}
+.edit-tab {
+  text-align: left;
+  margin-top: 20px;
+  
+}
+.edit-tab button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #4caf50; /* Neutral grey background */
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.edit-tab select,
+.edit-tab #schedule_time,
+.edit-tab input[type="text"],
+.edit-tab input[type="email"],
+.edit-tab input[type="date"],
+.edit-tab input[type="time"],
+.edot-tab textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.button {
+  padding: 10px 15px;
+  margin: 0 10px 10px;
+  cursor: pointer;
+}
+.create-campaign {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.delete {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd; 
+}
+
+.delete-button  {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd;  
+  padding: 5px 10px;
+}
+
+.edit-button{
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.manage-button{
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.manage-submit-button{
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 0;
+}
+
+.edit-button:hover {
+  background-color: #4CAF50;
+  color: #fff;
+}
+
+.delete:hover {
+  background-color: #fff;
+  color: red;
+}
+
+.deleteform {
+  width: 500px;
+  margin: 0px auto;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding:20px;
+}
+
+
+
+
+/* Header styles */
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: bold; /* This makes the text bold */
+  font-size: 28px; /* Adjust the size as needed */
+}
+
+
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  width:25%; /* Adjust the width as needed */
+  min-width:  90px; /* Adjust minimum width as needed */
+  margin-right: 10px; /* Provides a small space between label and input field */
+}
+
+.form-group .input-group {
+  width: 78%; /* Adjust the width as needed */
+  display: flex;
+}
+
+/* Adjust the input and textarea width */
+.form-content select,
+.form-content #schedule_time,
+.form-content input[type="text"],
+.form-content input[type="email"],
+.form-content input[type="date"],
+.form-content input[type="time"],
+.form-content textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center; /* This will vertically align the label and input/button */
+  margin-bottom: 20px; /* Spacing between form groups */
+}
+
+.form-group label {
+  margin-right: 10px; /* Spacing between label and input/button */
+  white-space: nowrap; /* Prevents the label from wrapping */
+}
+
+.input-group {
+  display: flex;
+  flex-grow: 1; /* Allows the input group to fill the space */
+}
+
+.input-group input[type="text"] {
+  flex-grow: 1; /* Allows the input to grow and fill the space */
+  margin-right: 10px; /* Spacing between input and button */
+}
+
+/* Button styles */
+.form-content button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #4caf50; /* Neutral grey background */
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* Larger font size for readability */
+}
+.edit-tab select,
+.edit-tab #schedule_time,
+.edit-tab input[type="text"],
+.edit-tab input[type="email"],
+.edit-tab input[type="date"],
+.edit-tab input[type="time"],
+.edot-tab textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  color: #000; /* Make sure this color stands out against the background */
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #fff; /* This should contrast with the modal background */
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); /* Adds a shadow for better visibility */
+  z-index: 10; /* Make sure this is above the modal's z-index */
+}
+
+.close-button:hover {
+  color: #555; /* Change color on hover for visual feedback */
+}
+
+.browse-image-button {
+  background-color: #4CAF50; /* Change this to the color you want */
+  color: #fff; /* And this to the text color you want */
+  /* Add any other styles you want here */
+}
+
+th, td {
+    vertical-align: middle;
+  }
+
+  /* Centered class */
+  .centered {
+    text-align: center;
+  }
+
+  /* Add additional CSS here for styling */
+.button.create-campaign {
+  margin: 0px 0px 50px;
+}
+
+.button.submit-button {
+  margin: 0px 0px 50px; 
+}
+.msg {
+  border: 0; 
+  color:#fff;
+  padding:5px 20px; 
+  border-radius:5px; 
+  margin-bottom: 30px;
+}
+
+/* The Modal (background) */
+.cmodal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 99; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.cmodal-content {
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-header h2{
+  color:#fff;
+  margin:10px 0;
+  font-size: 18px;
+  font-weight:normal;
+  padding: 0px;
+}
+
+/* Modal Body */
+.modal-body {padding: 30px 16px 20px}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+/* Modal Content */
+.modal-content {
+  position: relative;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 0;
+  border: 1px solid #888;
+  width: 80%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+.tox .tox-promotion {
+  display: none !important;
+}
+
+/* Add Animation */
+@keyframes animatetop {
+  from {top: -300px; opacity: 0}
+  to {top: 0; opacity: 1}
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+  height: auto !important;
+  padding: 0px;
+  border-bottom: none;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+}
+</style>
+
+<div x-data="{ createOpen: false, listOpen: true, editOpen: false, deleteOpen : false }"> <!-- initiate data -->
+
+  <!-- show list if return listOpen true -->
+  <div class="list-container" x-show="listOpen">
+      {isSuccess == true && 
+        
+        <div class="msg"  style={isSuccess == true?"background:green":"background:red" }   >{msg_text}</div>
+      
+      }
+      <button class="button create-campaign" @click="{ createOpen = true, listOpen = false, editOpen = false, deleteOpen = false }">Add</button>
+
+      <table>
+          <tr>
+              <th>ID</th>
+              <th>Title</th>
+               <th>Campaign Type</th>
+              <th>Status</th>
+              <th></th>
+          </tr>
+          <!-- Add rows here for each campaign -->
+          {
+              data.map((list,index)=>(
+              <tr key={list.id}>
+                  <td>{list.id}</td>
+                  <td>{list.settings.title}</td>
+                  <td>{list.status}</td>
+                  <td>
+                      <!-- delete button for campaign -->
+                      <button @click={`
+                        campaign_id = '${list.id}', 
+                        title='${list.settings.title}',
+                        itemKey = ${index},
+                        deleteOpen = true,
+                        createOpen = false, 
+                        listOpen = false,  
+                        editOpen = false`} 
+                      class="delete-button"  style="float: right;">Delete</button>
+
+
+                       <button class="manage-button" 
+                          @click={`
+                            manageCampaign( 
+                              '${list.id}'
+                            ),
+                            id='${list.id}', 
+                            title='${list.settings.title}',
+                            type='', 
+                            subject_line='${list.settings.subject_line}', 
+                            from_name='${list.settings.from_name}', 
+                            reply_to='${list.settings.reply_to}',
+                            to_name='${list.settings.to_name}',
+                            createOpen = false, 
+                            listOpen = false,   
+                            itemKey='${index}' 
+                          `}
+                          
+                          style="float: right;">Manage</button>
+                  </td>   
+              </tr>
+              ))
+          }
+      </table>
+  </div>
+
+
+  <!-- show delete if return delete true -->
+  <div class="form-content" x-show="deleteOpen">
+      <div class="deleteform">
+        <h2>Delete Campaign</h2>
+        <form id="deleteCampaignForm"   action="/mailchimp/campaigns" method="post">  
+          <p>Are you sure you want to delete <b><span x-text="title"></span></b>? </p>
+          <br /><br />
+          <input type="hidden" id="campaign_id" name="campaign_id"  x-model="campaign_id" >
+          <input type="hidden" id="itemKey" name="itemKey"  x-model="itemKey" >
+          <input type="hidden" id="action" name="action"  value="delete" >
+          <button class="button delete-campaign" @click="{ createOpen = false, listOpen = true, editOpen = false, deleteOpen = false }">Back to Campaign List</button>
+          <button type="submit" class="button submit-button">Submit</button>
+        </form>
+      </div>
+  </div>
+
+
+  <!-- show Create if return createOpen true -->
+  <div class="form-content" x-show="createOpen">
+      <h2>Create Campaign</h2>
+      <form id="createCampaignForm" action="/mailchimp/campaigns" method="post">
+        <!--
+        <div class="form-group">
+          <label for="type">Type</label>
+          <select id="type" name="type">
+              <option value="regular">regular</option>
+              <option value="plaintext">plaintext</option>
+              <option value="absplit">absplit</option>
+              <option value="rss">rss</option>
+              <option value="variate">variate</option>
+          </select>
+        </div>
+        -->
+        <div class="form-group">
+          <label for="name">Subject Line</label>
+          <input type="text" id="subject_line" name="subject_line" placeholder="Enter subject line">
+        </div>
+
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" id="title" name="title" placeholder="Enter title">
+        </div>
+        
+        <div class="form-group">
+          <label for="from_name">From Name</label>
+          <input type="text" id="from_name" name="from_name" placeholder="Enter from name">
+        </div>
+
+        <div class="form-group">
+          <label for="reply_to">Reply to</label>
+          <input type="text" id="reply_to" name="reply_to" placeholder="Enter reply to">
+        </div>
+       
+        <!--
+        <div class="form-group">
+          <label for="to_name">To Name</label>
+          <input type="text" id="to_name" name="to_name" placeholder="Enter to name">
+        </div>
+        
+        <div class="form-group">
+          <label for="campaign_send_datetime">Send Date and Time</label>
+          <input type="datetime-local" id="schedule_time" name="schedule_time" required step="900">
+        </div>
+        -->
+        <input type="hidden" id="action" name="type"  value="plaintext" >
+        <input type="hidden" id="acttypeion" name="action"  value="create" >
+        <button class="button create-campaign" @click="{  createOpen = false, listOpen = true, editOpen = false, deleteOpen = false  }">Back to Campaign List</button>
+        <button type="submit" class="button submit-button">Submit</button>
+      </form>
+  </div>
+
+    <!-- Trigger/Open The Modal -->
+
+    <!-- The Modal -->
+    <div id="myModal" class="cmodal">
+
+      <div class="cmodal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Manage</h2>
+        </div>
+        <div class="modal-body">
+            <div class="tab">
+              
+              <button class="tablinks" onclick="openTab(event, 'campaignEditTab')"  id="campaignContentDefault">Edit</button>
+              <button class="tablinks" onclick="openTab(event, 'campaignAudienceTab')">Audience</button>
+              <button class="tablinks" onclick="openTab(event, 'campaignContentTab')">Content</button>
+              <button class="tablinks" onclick="openTab(event, 'campaignScheduleTab')">Send time</button>
+            </div>
+
+            <div id="campaignAudienceTab" class="tabcontent">
+                 <form id="manageCampaignSetAud" method="post">
+                  <label for="selectAudience">Set audience </label>
+                  <select id="selectAudience" name="audience">
+                    <option value="">-select here-</option>
+                    {listOfAudiences.map((list) => (
+                      <option value={list.id}>{list.name}</option>
+                    ))}
+                  </select>
+                  <input type="hidden" id="managecampaignsetaud_id" name="managecampaignsetaud_id"  value="" >
+                  <input type="hidden" id="action" name="action"  value="set-audience" >
+                  <button class="manage-submit-button">Submit</button>
+                </form>
+              </form>
+            </div>
+
+            <div id="campaignContentTab" class="tabcontent">
+              <form method="post" id="manageCampaignContentForm">
+                <div class="form-group">
+                    <label for="template" style="width:150px;">Choose a Template</label>
+                    <select id="template" name="template">
+                        <option value="">-select-</option>
+                        <option value="template 1">template 1</option>
+                        <option value="template 2">template 2</option>
+                        <option value="template 3">template 3</option>
+                    </select>
+                </div>
+                <TinyMCE client:load></TinyMCE>
+                <input type="hidden" id="action" name="action"  value="content" >
+                <input type="hidden" id="managecampaigncont_id" name="managecampaigncont_id"  value="" >
+                <button class="manage-submit-button">Submit</button>
+              </form>
+            </div>
+      
+            <div id="campaignScheduleTab" class="tabcontent">
+                <form method="post" id="manageCampaignSchedForm">
+                Schedule <input type="datetime-local" id="schedule" name="schedule"  value="" step="900">
+                <input type="hidden" id="action" name="action"  value="schedule" >
+                <input type="hidden" id="managecampaignsche_id" name="managecampaignsche_id"  value="" >
+                <button class="manage-submit-button">Submit</button>
+              </form>
+            </div>
+
+            <div id="campaignEditTab" class="tabcontent">
+              <!-- Old Edit Campaign Content Here -->
+              <div class="edit-tab">
+                  <h2>Update Campaign</h2>
+                  <form id="editCampaignForm" action="/mailchimp/campaigns" method="post">
+                    <div class="form-group">
+                      <label for="name">Subject Line</label>
+                      <input type="text" id="subject_line" x-model="subject_line" name="subject_line"  placeholder="Enter subject line">
+                    </div>
+            
+                    <div class="form-group">
+                      <label for="title">Title</label>
+                      <input type="text" id="title" name="title" x-model="title" placeholder="Enter title">
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="from_name">From Name</label>
+                      <input type="text" id="from_name" name="from_name" x-model="from_name" placeholder="Enter from name">
+                    </div>
+            
+                    <div class="form-group">
+                      <label for="reply_to">Reply to</label>
+                      <input type="text" id="reply_to" name="reply_to" x-model="reply_to" placeholder="Enter reply to">
+                    </div>
+
+                    <!--
+                    <div class="form-group">
+                      <label for="to_name">To Name</label>
+                      <input type="text" id="to_name" name="to_name" x-model="to_name" placeholder="Enter to name">
+                    </div>
+                    -->
+            
+                    <input type="hidden" id="id" name="id"  x-model="id" >
+                    <input type="hidden" id="itemKey" name="itemKey"  x-model="itemKey" >
+                    <input type="hidden" id="action" name="action"  value="update" >
+                    <button type="submit" class="button submit-button">Submit</button>
+                    
+                  
+                      <!-- Remember to adapt x-model if not using Vue.js or a similar framework -->
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>            
+
+
+        </div>
+      </div>
+
+    </div>
+</div>
+
+<script>
+  
+    
+    import Toastify from 'https://cdn.skypack.dev/toastify-js';
+
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.getElementById("campaignContentDefault").click();
+    });
+
+    var template = document.getElementById("template");
+
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    window.manageCampaign = async function(id) {
+
+        modal.style.display = "block";
+        document.getElementById('managecampaigncont_id').value = id;
+        document.getElementById('managecampaignsche_id').value = id;
+        document.getElementById('managecampaignsetaud_id').value = id;
+        let textArea = document.querySelector("textarea[name='content']").getAttribute('id');
+        document.querySelector("#schedule").value = '';
+        tinymce.get(textArea).setContent('');
+
+        const formData = new FormData();
+        formData.append('id', id);
+        formData.append('action', 'read');
+        const values = Object.fromEntries(formData);
+        const res = await fetch("/api/campaigns/manage.json", {
+          method: "POST",
+          body: JSON.stringify(values),
+        });
+
+        const { message, status, content, data } = await res.json();
+        if(content){
+          
+          tinymce.get(textArea).setContent(content.plain_text);
+        }
+        let send_time = data.send_time.split("+");
+        
+        document.querySelector("#schedule").value = send_time[0];
+        document.querySelector("#selectAudience").value = data.recipients.list_id;
+        console.log(data);
+        console.log(message);
+        console.log(content);
+        console.log(status);
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+      modal.style.display = "none";
+      window.location.reload();
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        window.location.reload();
+      }
+    }
+
+
+    template.onchange = function(){
+      let textArea = document.querySelector("textarea[name='content']").getAttribute('id');
+
+      console.log(template.value);
+      let templateLayout = '';
+      if(template.value=='template 1'){
+          fetch('mailchimp/emailtemplate/template1.html')
+          .then(response => response.text())
+          .then(data => {
+             tinymce.get(textArea).setContent(data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }else if(template.value=='template 2'){
+          fetch('mailchimp/emailtemplate/template2.html')
+          .then(response => response.text())
+          .then(data => {
+             tinymce.get(textArea).setContent(data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }else if(template.value=='template 3'){
+        fetch('mailchimp/emailtemplate/template3.html')
+          .then(response => response.text())
+          .then(data => {
+             tinymce.get(textArea).setContent(data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+
+      
+    }
+
+
+    const manageCampaignSchedule = document.querySelector("#manageCampaignSchedForm") as HTMLFormElement;
+    manageCampaignSchedule?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await campaignsFetch(manageCampaignSchedule);
+    });   
+
+    const manageCampaignTemplate = document.querySelector("#manageCampaignContentForm") as HTMLFormElement;
+    manageCampaignTemplate?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await campaignsFetch(manageCampaignTemplate);
+    });  
+
+    const manageSetAudience = document.querySelector("#manageCampaignSetAud") as HTMLFormElement;
+    manageSetAudience?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      await campaignsFetch(manageSetAudience);
+    });
+
+    async function campaignsFetch(form){
+      const formData = new FormData(form);
+      const values = Object.fromEntries(formData);
+      const res = await fetch("/api/campaigns/manage.json", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+
+      const { message, status } = await res.json();
+
+      let background = "";
+
+
+      if(status==true){
+        background = 'darkgreen';
+      }else{
+        background = 'red';
+      }
+      console.log('test');
+      console.log(message);
+
+      Toastify({
+        text: `You have successfully ${message}.`,
+        duration: 2000,
+        close: false,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        style: {
+            background: background, // Dark green background
+              color: "white", // White text
+          },
+      }).showToast();
+    }
+
+
+    window.openTab = function (evt, tabName) {
+      // Declare all variables
+      var i, tabcontent, tablinks;
+
+      // Get all elements with class="tabcontent" and hide them
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+
+      // Get all elements with class="tablinks" and remove the class "active"
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+
+</script>

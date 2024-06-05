@@ -1,0 +1,163 @@
+---
+import { z } from "zod";
+import { ProductResult } from "../../utils/schemas";
+import ProductCard from "./ProductCard.astro";
+
+
+const ProductsResult = z.array(ProductResult);
+export interface Props {
+  products: z.infer<typeof ProductsResult>;
+}
+const { products, form_data } = Astro.props as Props;
+
+let search = '';
+let sort_by = '';
+
+if(form_data.toString()!==''){
+  search = form_data.get("search");
+  sort_by = form_data.get("sort_by");
+}
+---
+<style>
+button {
+  background-color: #4caf50;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  padding: 10px 15px;
+}
+
+.responsive-form {
+    /* general styles */
+}
+
+/* Styles for screens smaller than 600px (mobile) */
+@media only screen and (max-width: 600px) {
+    .responsive-form {
+        flex-direction: column;
+        align-items: start;
+    }
+    
+    .responsive-form h1 {
+        margin-bottom: 8px;
+        align-text: left;
+    }
+    
+    #collection-filter-sort-button {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+    
+    .responsive-form div {
+        margin-bottom: 8px;
+    }
+}
+
+.resposive-filter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 600px) {
+  .responsive-filter {
+    flex-direction: column;
+  }
+  .responsive-filter form {
+    flex-direction: row;
+    margin-bottom: 0;
+  }
+
+}
+
+
+</style>
+<section>
+
+  <div class="container py-16 sm:py-20 mx-auto mt-[25px]">
+      <form method="GET" class="responsive-form sm:align-text-top mb-4">
+        <h1 class="text-3xl text-harmony pr-8 sm:mb-[8px]" style="font-weight: bold";>Gifts Shop</h2>
+          <div id="collection-filter-sort-button" class="custom-select reveal active mr-4" style="display: none;">
+            <label for="sort_by" class="sr-only">Sort by</label>
+            <select name="sort_by" id="sort_by" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md">
+                  <option value="manual">Featured</option>
+                  <option selected={(sort_by==='best-selling')} value="best-selling">Best selling</option>
+                  <option selected={(sort_by==='title-ascending')} value="title-ascending">Alphabetically, A-Z</option>
+                  <option selected={(sort_by==='title-descending')} value="title-descending">Alphabetically, Z-A</option>
+            </select>
+          </div> 
+          <div class="flex flex-row w-full sm:w-[375px] gap-5">
+              <input type="text" name="search" id="searchInput" value={search}  placeholder="Search for products..." class="flex-auto px-4 py-2 border border-gray-300 rounded-md" >
+            <button type="submit">Search</button>
+          </div>
+    </form>
+
+    {search.length>0 && <p class="text-xl mb-5">Searching for '{search}'</p>}
+    <hr class="mb-5" />
+    <div class="responsive-filter flex flex-row">
+      <div class="flex flex-col">
+      <form method="GET" class="responsive-filter flex mb-4 gap-5">
+          <div id="collection-filter-sort-button" class="custom-select reveal active w-48 flex-auto">
+            <label for="sort_by" class="sr-only">Sort by</label>
+            <select name="sort_by" id="sort_by" class="px-4 w-full border border-gray-300 text-gray-700 rounded-md">
+                  <option value="manual">Featured</option>
+                  <option selected={(sort_by==='best-selling')} value="best-selling">Best selling</option>
+                  <option selected={(sort_by==='title-ascending')} value="title-ascending">Alphabetically, A-Z</option>
+                  <option selected={(sort_by==='title-descending')} value="title-descending">Alphabetically, Z-A</option>
+            </select>
+          </div> 
+          <div>
+            <input type="text" name="search" id="searchInput" value={search}  placeholder="Search for products..." class="px-2 py-2 border border-gray-300 rounded-md" style="display: none;" >
+            <button type="submit">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H4"></path>
+              </svg>
+            </button>
+          </div>
+      </form>
+      <form method="GET" class="responsive-filter flex mb-4 gap-5">
+        <div id="collection-filter-sort-button" class="custom-select reveal active w-48  flex-auto">
+          <label for="sort_by" class="sr-only">Price</label>
+          <select name="sort_by" id="sort_by" class="px-4 border border-gray-300 text-gray-700 rounded-md w-full">
+                <option value="manual">Price</option>
+                <option selected={(sort_by==='price-ascending')} value="price-ascending">Price, low to high</option>
+                <option selected={(sort_by==='price-descending')} value="price-descending">Price, high to low</option>
+          </select>
+        </div> 
+        <div>
+          <input type="text" name="search" id="searchInput" value={search}  placeholder="Search for products..." class="px-2 py-2 border border-gray-300 rounded-md" style="display: none;" >
+          <button type="submit">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H4"></path>
+            </svg>
+          </button>
+        </div>
+    </form>
+    <form method="GET" class="responsive-filter flex mb-4 gap-5">
+      <div id="collection-filter-sort-button" class="custom-select reveal active w-48  flex-auto">
+        <label for="sort_by" class="sr-only">Sort by</label>
+        <select name="sort_by" id="sort_by" class="px-4 border border-gray-300 text-gray-700 rounded-md w-full">
+              <option value="manual">Created</option>
+              <option selected={(sort_by==='created-ascending')} value="created-ascending">Date, old to new</option>
+              <option selected={(sort_by==='created-descending')} value="created-descending">Date, new to old</option>        </select>
+      </div> 
+      <div>
+        <input type="text" name="search" id="searchInput" value={search}  placeholder="Search for products..." class="px-2 py-2 border border-gray-300 rounded-md" style="display: none;" >
+        <button type="submit">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 18l6-6m0 0l-6-6m6 6H4"></path>
+          </svg>
+        </button>
+      </div>
+  </form>
+</div>
+    
+<div class="flex m-5">
+    <hr class="mb-5" />
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+      {products.map((product) => <ProductCard product={product} />)}
+    </div>
+  </div>
+</div>
+
+</section>

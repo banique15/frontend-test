@@ -1,0 +1,25 @@
+---
+import ThemeSwitch from '../../components/ThemeSwitch.astro';
+import Logout from '../../components/Logout.astro';
+
+---
+
+<div class="flex flex-row space-x-2">
+
+</div>
+<div class="dropdown">
+  <div tabindex="0" role="button" class="btn m-1">Settings</div>
+  <ul
+    tabindex="0"
+    class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50"
+  >
+    <li><a href="/app">App</a></li>
+    <li><a href="/preferences">Manage profile</a></li>
+    <li>
+      <Logout />
+    </li>
+    <li>
+      <ThemeSwitch />
+    </li>
+  </ul>
+</div>

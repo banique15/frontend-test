@@ -1,0 +1,4 @@
+name = "sfh-frontend"
+type = "webpack"
+account_id = "89c56868b02f8303d77d1de2531f0ee9" 
+workers_dev = true

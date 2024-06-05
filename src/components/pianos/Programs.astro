@@ -1,0 +1,41 @@
+---
+import { supabase } from '../../lib/supabase.ts';
+import Mapbox from './Mapbox.tsx';
+
+
+const { data, error } = await supabase
+    .from('piano_programs')
+    .select()
+    .order('created_at', { ascending: false })
+
+
+if (error) {
+    console.error(error);
+    return;
+}
+---
+
+<div class="max-w-full bg-gray-50 min-h-48 text-center text-black">
+    <h2 class="text-4xl font-bold p-3">Public Pianos</h2>
+    <Mapbox client:load/>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-6 w-full">
+        {data.map(program => (
+            <div key={program.id} class="card w-full shadow-xl text-white image-full overflow-hidden">
+                <figure><img class="w-full" src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
+                <div class="text-white text-left card-body">
+                    <div class="badge badge-accent">Created At: {program.created_at}</div>
+                    <div class="absolute bottom-8 left-8">
+                        <span class="text-xl -mb-3 text-white">The Sing for Hope Pianos</span>
+                        <h2 class="card-title text-white text-6xl font-extrabold">{program.piano_program_title}</h2>
+                        <span class="text-white">{program.location || 'N/A'}</span>
+                        <h3 class="text-white text-2xl font-bold">ID: {program.id}</h3>
+                    </div>
+                    <div class="absolute bottom-8 right-8 card-actions justify-end">
+                        <button class="btn btn-primary text-white">Read More -></button>
+                    </div>
+                </div>
+            </div>
+        ))}
+    </div>
+</div>

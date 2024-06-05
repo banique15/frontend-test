@@ -1,0 +1,100 @@
+---
+const { isLoggedIn } = Astro.locals
+
+import AppLayout from '../layout/AppLayout.astro';
+import Dashboard from './app/Dashboard.astro';
+import News from '../components/app/news/index.astro';
+import Pianos from '../components/app/pianos/index.astro';
+import Education from './app/Education.astro';
+import Health from './app/Health.astro';
+import Workforce from './app/Workforce.astro';
+import Diplomacy from './app/Diplomacy.astro';
+import Users from './app/Users.astro';
+import AppSidebar from '../components/app/AppSidebar.astro';
+import Campaign from '../components/newsletter/campaign.astro';
+import Audience from '../components/newsletter/audience.astro';
+import Subscribers from '../components/newsletter/subscribers.astro';
+import AssetManagement from '../components/assetmanagement/assetmanagement.astro';
+const title = 'Sing for Hope';
+---
+
+
+{isLoggedIn ? (
+<AppLayout title={title}>
+
+  <div class="z-50">
+  <AppSidebar />
+  </div>
+
+  
+  <div class="ml-64">
+  </div>
+
+
+  <div class="flex overflow-x-hidden h-screen">
+
+    <div
+      class="px-6 ml-60 transition-all ease-in-out duration-500 w-full max-h-screen"
+      x-data="{ activeContent: 'dashboard' }"
+      x-init="activeContent = localStorage.getItem('activeContent') || 'dashboard'"
+      @content-change.window="activeContent = $event.detail; localStorage.setItem('activeContent', $event.detail);$nextTick(() => {});"
+      
+    >
+     
+
+      <div x-show="activeContent === 'dashboard'">
+        <Dashboard />
+      </div>
+
+      <div x-show="activeContent === 'news'">
+        <News />
+      </div>
+
+      <div x-show="activeContent === 'pianos'">
+        <Pianos />
+      </div>
+
+      <div x-show="activeContent === 'education'">
+        <Education />
+      </div>
+
+      <div x-show="activeContent === 'health'">
+        <Health />
+      </div>
+
+      <div x-show="activeContent === 'workforce'">
+        <Workforce />
+      </div>
+
+      <div x-show="activeContent === 'diplomacy'">
+        <Diplomacy />
+      </div>
+
+      <div x-show="activeContent === 'users'">
+        <Users />
+      </div>
+
+       <div x-show="activeContent === 'campaign'">
+        <Campaign />
+      </div>
+
+      <div x-show="activeContent === 'audience'">
+        <Audience />
+      </div>
+      
+      <div x-show="activeContent === 'assetmanagement'">
+        <AssetManagement />
+      </div>
+      
+      <div x-show="activeContent === 'subscribers'">
+        <Subscribers />
+       
+      </div>
+    </div>
+  </div>
+</AppLayout>
+) : (
+<script>
+    window.location.href = '/login';
+  </script>
+  )}

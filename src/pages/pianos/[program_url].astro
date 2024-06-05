@@ -1,0 +1,125 @@
+---
+import Base from '../../layout/Base.astro';
+const title = 'Sing for Hope';
+
+
+import { createClient } from '@supabase/supabase-js';
+
+// Supabase client setup
+const supabaseUrl = 'https://vsiuakofodgkhmclfvpl.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzaXVha29mb2Rna2htY2xmdnBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTk2NTg5OTgsImV4cCI6MjAxNTIzNDk5OH0.ty_9mqxxjK9itXEBCLrFzgtng1tFQGBMRLSwodeGzVk';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+async function fetchPianoProgramItem(piano_program_url) {
+  const query = `
+    query GetProgramItemByURL($piano_program_url: String!) {
+      piano_programsCollection(filter: {piano_program_url: {eq: $piano_program_url}}) {
+        edges {
+          node {
+            id
+            piano_program_title
+            piano_program_url
+            piano_program_image
+            piano_program_launch_date
+            piano_program_location
+          }
+        }
+      }
+    }
+  `;
+
+    const response = await fetch('https://vsiuakofodgkhmclfvpl.supabase.co/graphql/v1', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "apiKey": supabaseAnonKey
+        },
+        body: JSON.stringify({
+            query,
+            variables: { piano_program_url }
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const json = await response.json();
+    console.log(json); // Log the entire response
+
+
+    if (!json.data) {
+        throw new Error('Response does not contain a data property');
+    }
+
+    if (!json.data.piano_programsCollection) {
+        throw new Error('Data does not contain a piano_programsCollection property');
+    }
+
+    return json.data.piano_programsCollection.edges.length > 0 ? json.data.piano_programsCollection.edges[0].node : null;
+}
+
+// Extracting the URL slug from the route
+const piano_program_url = Astro.params.piano_program_url;
+console.log(Astro.params)
+
+const programItem = await fetchPianoProgramItem(piano_program_url);
+console.log(programItem);
+---
+
+<Base title="{title}">
+
+  <!-- Hero  -->
+  <div style={`background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 50%, black), url(${programItem.piano_program_image}); background-size: cover; background-position: center center;`} class="min-h-96 w-full px-6 py-12 lg:px-8 flex flex-col items-center justify-endr relative">
+    <div class="absolute w-32 h-20 rounded-md top-20 right-10 bg-black bg-opacity-50 text-white p-3">
+      Opening March 26 to March 32
+    </div>
+      <div class="absolute bottom-16 left-auto text-base leading-7 text-white text-center">
+        <span class="pb-3 font-bold tracking-tight text-white sm:text-2xl">The Sing for Hope Pianos</span>
+        <h1 class="text-8xl font-extrabold leading-7 text-white mt-6">{programItem.piano_program_title}</h1>
+      </div>
+  </div>
+
+  <!-- Public Layout -->
+  <div class="bg-white px-6 flex flex-col space-y-3 my-3">
+
+    <!-- Applications -->
+    <div class="w-full mx-auto px-6 border border-gray-600 rounded-2xl py-12 lg:px-8">
+      Artist Applications
+    </div>
+
+    <!-- Launch Event -->
+    <div class="w-full mx-auto px-6 border border-gray-600 rounded-2xl py-12 lg:px-8">
+      Launch Event
+    </div>
+
+     <!-- Map/Pianos/Artists -->
+    <div class="w-full mx-auto px-6 border border-gray-600 rounded-2xl py-12 lg:px-8">
+      Map/Pianos/Artists
+    </div>
+
+    <!-- Project Leaders -->
+    <div class="w-full mx-auto ">
+      <div class="flex flex-row space-x-3">
+        <div class="border grow h-32 w-2/3 border-gray-600 rounded-2xl px-6 py-12 lg:px-8">
+          From our leaders
+        </div>
+
+        <div class="border grow h-32 w-1/3 border-gray-600 rounded-2xl px-6 py-12 lg:px-8">
+          Program Leaders
+        </div>
+      </div>
+    </div>
+
+    <!-- Partners -->
+    <div class="w-full mx-auto px-6 border border-gray-600 rounded-2xl py-12 lg:px-8">
+      Partners
+    </div>
+
+    <!-- Project News -->
+    <div class="w-full mx-auto px-6 border border-gray-600 rounded-2xl py-12 lg:px-8">
+      News
+    </div>
+
+  </div>
+</Base>

@@ -1,0 +1,6 @@
+[install]
+registry = "https://registry.npmjs.org" # redeclare default!
+
+[install.scopes]
+"@tiptap-pro" = "https://registry.tiptap.dev/:_authToken=h7hbETjDBNYZqG+OzJEkQYYFgzpSK7w+sPAxXYgsv7OFoBWzCjua2+HEYX4KGgF9"
+

@@ -1,0 +1,102 @@
+---
+import Base from '../layout/Base.astro';
+const title = 'Login to Sing for Hope';
+---
+
+ 
+<Base title={title}>
+  <main class="flex-1 flex flex-col gap-4 items-center p-4 mt-24 justify-center">
+    <section id="login-section" class="w-full max-w-md" x-data="{ isLoggedIn: false }" x-show="!isLoggedIn">
+      <h1
+        class="font-semibold text-2xl dark:text-zinc-100 text-zinc-900 w-full mb-1"
+      >
+        {title}
+      </h1>
+      <p class="text-zinc-500 dark:text-zinc-400 text-sm mb-8 w-full">
+        New to Sing for Hope? <a
+          href="/register"
+          class="dark:text-blue-400 text-blue-600 underline underline-offset-2 font-medium"
+          >Create an account</a
+        >
+      </p>
+      <form 
+        id="login-form"
+        action="/api/auth/login"
+        method="post"
+        class="grid grid-cols-1 gap-3 w-full"
+      >
+        <div class="grid grid-cols-1 gap-2">
+          <label
+            for="email"
+            class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+            >Email</label
+          >
+          <input
+            id="email"
+            type="email"
+            name="email"
+            class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+          />
+        </div>
+        <label
+          for="password"
+          class="font-medium dark:text-zinc-300 text-zinc-900 text-sm"
+          >Password</label
+        >
+        <input
+          id="password"
+          type="password"
+          name="password"
+          class="rounded-md py-1 px-3 dark:bg-zinc-800 dark:text-zinc-300 border bg-zinc-50 border-zinc-300 dark:border-zinc-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:bg-zinc-900 focus:bg-white focus:ring-opacity-60"
+        />
+        <button
+          type="submit"
+          class="dark:bg-zinc-100 bg-zinc-900 border-zinc-900 py-1.5 border dark:border-zinc-100 rounded-md mt-2 dark:text-zinc-900 text-zinc-100 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
+          >Login</button
+        >
+      </form>
+      <div id="g_id_onload"
+          data-client_id="456409048169-6b84irt4s27gfvg8hofskvtrlc5b2hn3.apps.googleusercontent.com"
+          data-context="use"
+          data-ux_mode="popup"
+          data-login_uri="https://localhost:4321/api/auth/login"
+          data-auto_select="true"
+          data-itp_support="true">
+      </div>
+
+      <div class="g_id_signin"
+          data-type="standard"
+          data-shape="rectangular"
+          data-theme="outline"
+          data-text="signin_with"
+          data-size="large"
+          data-logo_alignment="left">
+      </div>
+    </section>
+  
+  </main>
+  
+</Base>
+
+<script>
+    const prev_url = document.referrer;
+    document.getElementById('login-form')?.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const emailElement = document.getElementById('email');
+      const email = emailElement instanceof HTMLInputElement ? emailElement.value : '';
+      const passwordElement = document.getElementById('password') as HTMLInputElement;
+      const password = passwordElement ? passwordElement.value : '';
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password, prev_url }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(() => {
+        window.location.href = prev_url;
+      });
+    });
+  </script>

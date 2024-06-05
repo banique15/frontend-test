@@ -1,0 +1,90 @@
+---
+
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <!-- Include Toastify CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <!-- Simple Button -->
+   
+
+    <!-- Client-side script -->
+    <script type="module">
+        import Toastify from 'https://cdn.skypack.dev/toastify-js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleButton = document.querySelector('button[role="switch"]');
+  toggleButton.addEventListener('click', function() {
+    const isOn = this.getAttribute('aria-checked') === 'true';
+    this.setAttribute('aria-checked', String(!isOn));
+    let action = !isOn ? 'subscribed' : 'unsubscribed'; // Determine the action based on the toggle state
+
+    // Show immediate toast message here
+    Toastify({
+      text: `You have successfully ${action}.`,
+      duration: 1000,
+      close: false,
+      gravity: "top", // `top` or `bottom`
+      position: "right", // `left`, `center` or `right`
+      style: {
+          background: "darkgreen", // Dark green background
+            color: "white", // White text
+        },
+    }).showToast();
+
+    const innerSpan = this.querySelector('span:nth-child(2)');
+    if (!isOn) {
+      innerSpan.classList.add('translate-x-6');
+      innerSpan.classList.remove('translate-x-1');
+      this.classList.remove('bg-gray-200');
+      this.classList.add('bg-green-600');
+    } else {
+      innerSpan.classList.remove('translate-x-6');
+      innerSpan.classList.add('translate-x-1');
+      this.classList.add('bg-gray-200');
+      this.classList.remove('bg-green-600');
+    }
+
+    var formData = new FormData();
+    formData.append("status", action);
+
+    fetch(window.location.href, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+      console.log(result);
+      // Optional: Show another toast or update the UI based on the server response
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Show error toast message immediately upon error
+      Toastify({
+        text: `Error: Could not update subscription status. Please try again.`,
+        duration: 800,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        style: {
+          background: "darkgreen", // Dark green background
+            color: "white", // White text
+        },
+      }).showToast();
+    });
+  });
+});
+
+
+    </script>
+</body>
+</html>
+
+

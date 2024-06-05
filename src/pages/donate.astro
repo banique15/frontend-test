@@ -1,0 +1,156 @@
+---
+import Base from '../layout/Base.astro';
+const title = 'Sing for Hope';
+const { isLoggedIn } = Astro.locals
+
+---
+
+<Base title={title}>
+  <div class="mt-3">Donate</div>
+    <section class="donate flex flex-col-2 justify-center items-start bg-transparent p-16 sm:p-1">
+  <div class="flex flex-col-2 bg-white opacity-90 rounded-3xl px-5 py-5 m-5 sm:m-0 sm:px-0">
+
+    <div class="flex flex-col mx-auto justify-center sm:mx-4">
+      <div class="relative text-left px-5 py-5 mb-5 rounded-3xl sm:mx-0">
+        <h3 class="text-2xl text-gray-800 font-bold  md:leading-tight lg:leading-tight dark:text-gray-200">We
+          can't do it without you..</h3>
+      <p >Please donate today and help us bring hope where it's needed most. Every penny you donate goes to
+          support our programming and the communities we serve.
+      </p>
+      </div>
+      <div 
+        role="tablist"
+        aria-label="tabs"
+        class="relative  mx-auto h-12 grid grid-cols-3 items-center rounded-full bg-transparent overflow-hidden shadow-2xl shadow-900/20 transition"
+      >
+        <div class="absolute indicator h-10 my-auto top-0 bottom-0 left-0 rounded-full bg-white shadow-md sm:w-full"></div>
+        <button
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-1"
+          id="tab-1"
+          tabindex="0"
+          class="relative block h-10 px-6 tab rounded-full hover:bg-harmony hover:text-white text-xs sm:text-[12px] text-center whitespace-normal leading-none tracking-tighter">
+          Credit/Debit or Apple Pay
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-2"
+          id="tab-2"
+          tabindex="-1"
+          class="relative block h-10 px-6 tab rounded-full hover:bg-harmony hover:text-white text-xs"
+        >
+          Paypal
+        </button>
+        <button
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-3"
+          id="tab-3"
+          tabindex="-1"
+          class="relative block h-10 px-6 tab rounded-full hover:bg-harmony hover:text-white text-xs"
+        >
+          Mail a Check
+        </button>
+      </div>
+      <div class="mt-6 relative rounded-3xl bg-harmonylight h-auto w-full">
+        <div
+          role="tabpanel"
+          id="panel-1"
+          class="tab-panel p-6 transition duration-300"
+        >
+        <div>
+          <div class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+            <label for="name" class="block text-xs font-medium text-gray-900">Name</label>
+            <input type="text" name="name" id="name" class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="Jane Smith">
+          </div>
+          <fieldset>
+            <legend class="block text-sm font-medium leading-6 text-gray-900">Card Details</legend>
+            <div class="mt-2 -space-y-px rounded-md bg-white shadow-sm">
+              <div>
+                <label for="card-number" class="sr-only">Card number</label>
+                <input type="text" name="card-number" id="card-number" class="relative block w-full rounded-none rounded-t-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Card number">
+              </div>
+              <div class="flex -space-x-px">
+                <div class="w-1/2 min-w-0 flex-1">
+                  <label for="card-expiration-date" class="sr-only">Expiration date</label>
+                  <input type="text" name="card-expiration-date" id="card-expiration-date" class="relative block w-full rounded-none rounded-bl-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="MM / YY">
+                </div>
+                <div class="min-w-0 flex-1">
+                  <label for="card-cvc" class="sr-only">CVC</label>
+                  <input type="text" name="card-cvc" id="card-cvc" class="relative block w-full rounded-none rounded-br-md border-0 bg-transparent py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="CVC">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+          <button class="w-full rounded-full p-4 bg-harmony text-white mt-10">
+            Submit
+          </button>
+        </div>
+        </div>
+        <div
+          role="tabpanel"
+          id="panel-2"
+          class="absolute top-0 invisible opacity-0 tab-panel p-6 transition duration-300"
+        >
+          <h2 class="text-xl font-semibold text-gray-800">Donate with Paypal</h2>
+          <img src="src/components/donate/images/5895ceb8cba9841eabab6072.png" alt="donate">
+        </div>
+        <div
+          role="tabpanel"
+          id="panel-3"
+          class="absolute top-0 invisible opacity-0 tab-panel p-6 transition duration-300"
+        >
+          <h3 class="text-xl text-gray-800 font-bold  md:leading-tight lg:leading-tight dark:text-gray-200">
+            Other
+            ways to donate</h3>
+        <h1
+            class="text-3xl text-gray-800 font-bold md:text-4xl md:leading-tight lg:text-5xl lg:leading-tight dark:text-gray-200">
+            Mail a Check</h1>
+        <p>Please send your donation to:<br>
+            Sing for Hope<br>
+            c/o CliftonLarsonAllen LLP<br>
+            50 Tice Boulevard, Suite 175<br>
+            Woodcliff Lake, NJ 07677</p>
+</div>
+      </div>
+    </div>
+  </div>
+  <div class="container flex-row m-20 justify-center bg-white sm:m-0 sm:px-0">
+  </div>
+</section>
+  </div>
+                       
+<style>
+  .donate {
+  background-image: url(https://media.singforhope.org/2023/11/Artist-name-Magic-Moms-Location-Clouet-Gardens-42-scaled.jpg?auto=format&crop=faces%2Ccenter&ixlib=php-3.3.1);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  }
+  .flex {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+@media screen and (max-width: 640px) {
+  .flex {
+    flex-direction: column;
+    min-width: 100%;
+    max-width: 100%;
+    padding: 5px;
+  }
+  .flex-col-2 {
+    min-width: 100%;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 5px;
+  }
+}
+
+  </style>
+
+</Base>

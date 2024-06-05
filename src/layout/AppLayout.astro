@@ -1,0 +1,47 @@
+---
+import Header from './Header.astro';
+import '@/global.css';
+
+---
+
+<html lang="en" class="h-full w-full bg-white">
+    <head>
+        <title>Sing for Hope App</title>
+        <meta charset="utf-8" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <script>
+        // Check dark mode
+        if (
+            localStorage.getItem('color-theme') === 'dark' ||
+            (!('color-theme' in localStorage) &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        </script>
+        
+    </head>
+
+    <body
+    class="flex flex-col h-full w-full dark:bg-zinc-900 bg-zinc-50 dark:text-zinc-100"
+    >
+        <Header />
+
+        <div>
+
+        <slot />
+       
+        </div>
+
+        <script
+        is:inline
+        src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"
+        ></script>
+    </body>
+</html>

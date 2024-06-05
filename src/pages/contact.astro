@@ -1,0 +1,15 @@
+---
+import Base from '../layout/Base.astro';
+const title = 'Sing for Hope';
+const { isLoggedIn } = Astro.locals;
+
+---
+
+<Base title={title}>
+  
+
+<div class="mt-3" 
+x-data="{ isLoggedIn: false }" 
+x-show="isLoggedIn">Contact Us</div>
+
+</Base>

@@ -1,0 +1,28 @@
+---   
+import Topbar from '../components/header/Topbar.astro';
+import ProgramsNav from '../components/header/ProgramsNav.astro';
+import Logo from '../components/header/Logo.astro';
+import Nav from '../components/header/Nav.astro';
+import Profile from '../components/header/Profile.astro';
+import Donate from '../components/header/Donate.astro';
+
+---
+
+<header>
+
+    <div id="main-header" class="fixed top-0 bg-white z-50 w-full">
+        <Topbar />
+        <div class="flex items-center justify-between px-1 ps:px-6 lg:px-6">
+            <div class="w-1/2 flex items-center space-x-4">
+                <Logo />
+                <Nav />
+            </div>
+            <div class="w-1/2 z-40 flex space-x-1 justify-end">
+                <Profile />
+                <Donate />
+            </div>
+        </div>
+        <ProgramsNav />
+    </div>
+    
+</header>

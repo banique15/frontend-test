@@ -1,0 +1,35 @@
+---
+import NavToggle from '../../icons/NavToggle.astro';
+import PrimaryNav from '../../components/PrimaryNav.jsx';
+---
+
+<div class="navbar w-auto p-0 bg-white dark:bg-black">
+  <div class="navbar -ml-3 lg:hidden">
+    <div class="dropdown flex flex-row">
+      <div tabindex="0" role="button" class="btn btn-ghost text-xs">
+        <NavToggle />
+        Menu
+      </div>
+      <ul
+        tabindex="0"
+        class="menu menu-sm dropdown-content absolute top-14 left-0 z-50 p-2 shadow bg-white text-gray-900 rounded-box w-60 border-gray-200"
+      >
+        <li>
+          <a href="/about">About</a>
+          <ul class="p-2">
+            <li><a href="/about#mission">Our Mission</a></li>
+            <li><a href="/about#board">Board of Directors</a></li>
+            <li><a href="/about#leadership">Leadership</a></li>
+            <li><a href="/about#reports">Annual Reports & Financials</a></li>
+            <li><a href="/about#press">Press</a></li>
+          </ul>
+        </li>
+        <li><a href="/news">News</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="hidden lg:flex">
+    <PrimaryNav client:load />
+  </div>
+</div>

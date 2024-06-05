@@ -1,0 +1,453 @@
+---
+import { audiences } from '../../pages/mailchimp/mcfunctions';
+import { subResponses, audienceSelected } from '../../pages/utility/responses';
+let  data = await audiences();
+let msg_text = '';
+let isSuccess = false;
+let subformBackResponse = subResponses.get().success;
+if(subformBackResponse){
+  isSuccess = true;
+  msg_text =  subResponses.get().message;
+}
+subResponses.set({'success':false,'message':''});
+console.log(audienceSelected.get())
+---
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #F1F1F1;
+}
+tr:nth-child(even) {
+  background-color: #F9F9F9;
+}
+tr:hover {
+  background-color: #E7F4F9;
+}
+.checkbox {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  th, td {
+    display: block;
+    width: 100%;
+  }
+  th {
+    background-color: #ccc;
+  }
+}
+.list-container, .form-content {
+  text-align: left;
+  margin-top: 140px;
+}
+.button {
+  padding: 10px 15px;
+  margin: 0 10px 10px;
+  cursor: pointer;
+}
+.create-campaign {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.delete {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd; 
+}
+.delete-button  {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  border: 1px solid #ddd;  
+  padding: 5px 10px;
+}
+.edit-button{
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: green;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.edit-button:hover {
+  background-color: #4CAF50;
+  color: #fff;
+}
+.delete:hover {
+  background-color: #fff;
+  color: red;
+}
+.deleteform {
+  width: 500px;
+  margin: 0px auto;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  padding:20px;
+}
+/* Header styles */
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: bold; /* This makes the text bold */
+  font-size: 28px; /* Adjust the size as needed */
+}
+.form-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.form-group label {
+  width: 5%; /* Adjust the width as needed */
+  min-width:  90px; /* Adjust minimum width as needed */
+  margin-right: 10px; /* Provides a small space between label and input field */
+}
+.form-group .input-group {
+  width: 78%; /* Adjust the width as needed */
+  display: flex;
+}
+/* Adjust the input and textarea width */
+.form-content select,
+.form-content input[type="text"],
+.form-content input[type="email"],
+.form-content input[type="date"],
+.form-content input[type="time"],
+.form-content textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-group {
+  display: flex;
+  align-items: center; /* This will vertically align the label and input/button */
+  margin-bottom: 20px; /* Spacing between form groups */
+}
+.form-group label {
+  margin-right: 10px; /* Spacing between label and input/button */
+  white-space: nowrap; /* Prevents the label from wrapping */
+}
+.input-group {
+  display: flex;
+  flex-grow: 1; /* Allows the input group to fill the space */
+}
+.input-group input[type="text"] {
+  flex-grow: 1; /* Allows the input to grow and fill the space */
+  margin-right: 10px; /* Spacing between input and button */
+}
+/* Button styles */
+.form-content button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background-color: #4caf50; /* Neutral grey background */
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px; /* Larger font size for readability */
+}
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px;
+  color: #000; /* Make sure this color stands out against the background */
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: #fff; /* This should contrast with the modal background */
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2); /* Adds a shadow for better visibility */
+  z-index: 10; /* Make sure this is above the modal's z-index */
+}
+.close-button:hover {
+  color: #555; /* Change color on hover for visual feedback */
+}
+.browse-image-button {
+  background-color: #4CAF50; /* Change this to the color you want */
+  color: #fff; /* And this to the text color you want */
+  /* Add any other styles you want here */
+}
+th, td {
+    vertical-align: middle;
+  }
+  /* Centered class */
+  .centered {
+    text-align: center;
+  }
+  /* Add additional CSS here for styling */
+.button.create-campaign {
+  margin: 0px 0px 50px;
+}
+.button.submit-button {
+  margin: 0px 0px 50px; 
+}
+.msg {
+  border: 0; 
+  color:#fff;
+  padding:5px 20px;   
+  border-radius:5px; 
+  margin-bottom: 30px;
+}
+</style>
+<div x-data="{ createOpen: false, listOpen: true, editOpen: false, deleteOpen : false }"> <!-- initiate data -->
+  <!-- show list if return listOpen true -->
+  <div class="list-container" x-show="listOpen">
+       {isSuccess == true && 
+        
+        <div class="msg"  style={isSuccess == true?"background:green":"background:red" }   >{msg_text}</div>
+      
+      }
+      <button class="button create-campaign" @click="{ createOpen = true, listOpen = false, editOpen = false, deleteOpen = false }">Add</button>
+     
+      <table>
+          <tr>
+              <th>Audience Name</th>
+              <th>Company</th>
+              <th></th>
+          </tr>
+          <!-- Add rows here for each campaign -->
+          {
+              data.map((list,index)=>(
+              <tr key={list.id}>
+                  <td>{list.name}</td>
+                  <td>{list.contact.company}</td>
+                  <td>
+                      <!-- delete button for campaign -->
+                      <button @click={`
+                        id = '${list.id}', 
+                        email_address='${list.email_address}',
+                        name="${list.name}",
+                        deletekey = ${index},
+                        deleteOpen = true,
+                        createOpen = false, 
+                        listOpen = false,  
+                        editOpen = false`} 
+                      class="delete-button mx-2"  style="float: right;">Delete</button>
+                         <!-- edit button for campaign -->
+                        <button @click={`
+                         id='${list.id}', 
+                         name="${list.name}"
+                         company='${list.contact.company}',
+                         address1='${list.contact.address1}',
+                         city='${list.contact.city}',
+                         country='${list.contact.country}',
+                         permission_reminder='${list.permission_reminder}',
+                         from_name='${list.campaign_defaults.from_name}',
+                         from_email='${list.campaign_defaults.from_email}',
+                         subject='${list.campaign_defaults.subject}',
+                         language='${list.campaign_defaults.language}',
+                         zip='${list.contact.zip}',
+                         state='${list.contact.state}',
+                         createOpen = false, 
+                         listOpen = false,  
+                         editOpen= true, 
+                         editkey='${index}' `} 
+                         class="edit-button" style="float: right;">Edit</button> 
+                  </td>   
+              </tr>
+              ))
+          }
+      </table>
+  </div>
+  <!-- show update if return editOpen true -->
+  <div class="form-content" id="editOpen" x-show="editOpen">
+      <h2>Update Audience</h2>
+      <form id="editCampaignForm"  action="/mailchimp/addaud" method="post">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" x-model="name" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input type="text" id="company" name="company" x-model="company" placeholder="Enter company">
+        </div>
+        <div class="form-group">
+          <label for="address1">Address 1</label>
+          <input type="text" id="address1" name="address1" x-model="address1" placeholder="Enter address 1">
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" name="city" x-model="city" placeholder="Enter city">
+        </div>
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="country" x-model="country" placeholder="Enter country">
+        </div>
+        <div class="form-group">
+          <label for="permission_reminder">Permission Reminder</label>
+          <input type="text" id="permission_reminder" name="permission_reminder" x-model="permission_reminder" placeholder="Enter permission reminder">
+        </div>
+        <div class="form-group">
+          <label for="from_name">From Name</label>
+          <input type="text" id="from_name" name="from_name" x-model="from_name" placeholder="Enter from name">
+        </div>
+        <div class="form-group">
+          <label for="from_email">From Email</label>
+          <input type="email" id="from_email" name="from_email" x-model="from_email" placeholder="Enter from email">
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject" x-model="subject" placeholder="Enter subject">
+        </div>
+        <div class="form-group">
+          <label for="language">Language</label>
+          <input type="text" id="language" name="language" x-model="language" placeholder="Enter language">
+        </div>
+        <div class="form-group">
+          <label for="zip">Zip</label>
+          <input type="text" id="zip" name="zip" x-model="zip" placeholder="Enter zip">
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" id="state" name="state" x-model="state" placeholder="Enter state">
+        </div>
+        
+        <input type="hidden" id="id" name="id"  x-model="id" >
+        <input type="hidden" id="action" name="action"  value='update'>
+        <div class="form-group">
+          <label for="permission_reminder">Permission reminder</label>
+          <input type="text" id="permission_reminder" name="permission_reminder" placeholder="permission_reminder" >
+        </div>
+
+        <div class="form-group">
+          <label for="from_name">From Name:</label>
+          <input type="text" id="from_name" name="from_name" placeholder="Enter from name">
+        </div>
+
+        <div class="form-group">
+          <label for="from_email">From Email:</label>
+          <input type="email" id="from_email" name="from_email" placeholder="Enter from email">
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject:</label>
+          <input type="text" id="subject" name="subject" placeholder="Enter subject">
+        </div>
+
+        <div class="form-group">
+          <label for="language">Language:</label>
+          <input type="text" id="language" name="language" placeholder="Enter language">
+        </div>
+        
+        <input type="hidden" id="id" name="id"  x-model="id" >
+        <input type="hidden" id="action" name="action"  value='update'>
+        <button class="button create-campaign" @click="{ createOpen = false, listOpen = true, editOpen = false, deleteOpen = false  }">Back to Audience List</button>
+        <button type="submit" class="button submit-button">Submit</button>
+      </form>
+  </div>
+
+
+  <!-- show update if return delete true -->
+  <div class="form-content" x-show="deleteOpen">
+      <div class="deleteform">
+        <h2>Delete Audience</h2>
+        <form id="deleteForm" action="/mailchimp/addaud" method="post">
+
+          <p>Are you sure you want to delete <b><span x-text="name"></span></b>? </p>
+          <br /><br />
+          <input type="hidden" id="id" name="id"  x-model="id" >
+          <input type="hidden" id="email_address" name="email_address"  x-model="email_address" >
+          <input type="hidden" id="action" name="action"  value='delete'>
+          <button class="button delete-campaign" @click="{ createOpen = false, listOpen = true, editOpen = false, deleteOpen = false }">Back to Audience List</button>
+          <button type="submit" class="button submit-button">Submit</button>
+        </form>
+      </div>
+  </div>
+
+
+  <!-- show create if return createOpen true -->
+  <div class="form-content" x-show="createOpen">
+      <h2>Add Audience</h2>
+      <form id="createCampaignForm" action="/mailchimp/addaud" method="post">
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" required name="name" placeholder="Enter name">
+        </div>
+
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input type="text" id="company" required name="company" placeholder="Enter company">
+        </div>
+
+        <div class="form-group">
+          <label for="address1">Address</label>
+          <input type="text" id="address1" required name="address1" placeholder="Enter address">
+        </div>
+
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" id="city" required name="city" placeholder="Enter city">
+        </div>
+
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" id="state" required name="state" placeholder="Enter state">
+        </div>
+
+        <div class="form-group">
+          <label for="zip">Zip</label>
+          <input type="text" id="zip" required name="zip" placeholder="Enter zip">
+        </div>
+
+        <div class="form-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" required name="country" placeholder="Enter country">
+        </div>
+
+        <div class="form-group">
+          <label for="permission_reminder">Permission Reminder</label>
+          <input type="text" id="permission_reminder" required name="permission_reminder" placeholder="Enter permission reminder">
+        </div>
+
+        <div class="form-group">
+          <label for="from_name">From Name</label>
+          <input type="text" id="from_name" required name="from_name" placeholder="Enter from name">
+        </div>
+
+        <div class="form-group">
+          <label for="from_email">From Email</label>
+          <input type="email" id="from_email" required name="from_email" placeholder="Enter from email">
+        </div>
+
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" required name="subject" placeholder="Enter subject">
+        </div>
+
+        <div class="form-group">
+          <label for="language">Language</label>
+          <input type="text" id="language" required name="language" placeholder="Enter language">
+        </div>
+
+        <input type="hidden" id="action" name="action"  value='create'>
+        <button class="button create-campaign" @click="{  createOpen = false, listOpen = true, editOpen = false, deleteOpen = false  }">Back to Audience List</button>
+        <button type="submit" class="button submit-button">Submit</button>
+      </form>
+  
+</div>
+<script>
+// JavaScript to toggle the selection of all campaign checkboxes
+    const selectAllCheckbox = document.getElementById('selectAllCampaigns');
+    var campaignCheckboxes = document.querySelectorAll('.campaign-checkbox');
+    
+    selectAllCheckbox.addEventListener("click", function() {
+      alert();
+    });
+</script>

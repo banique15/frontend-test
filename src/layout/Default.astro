@@ -1,0 +1,29 @@
+---
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Sing for Hope</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <Header />
+    <main class="mb-auto pt-36">
+    <slot />
+    </main>
+    <Footer />
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.0/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+  </body>
+</html>
+<!-- special characters -->
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+<!-- responsiveness -->
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />

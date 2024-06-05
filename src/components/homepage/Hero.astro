@@ -1,0 +1,115 @@
+---
+
+---
+
+<section class="overflow-x-hidden" id="primary">
+	<main id="main">
+
+		<!-- Main container -->
+		<div class="
+		overflow-hidden bg-gray-100 mx-auto p-3 flex flex-col justify-end relative h-[60vh]
+		lg:h-[50vh] lg:p-2 lg:min-h-[500px] 
+		">
+
+		<!-- Video and banner overlay -->
+		<div class="absolute inset-0 z-10">
+
+		<!-- HTML5 video player -->
+		<video autoplay muted loop id="myVideo" class="absolute inset-0 object-cover w-full h-full ">
+			<source src="https://sfh-media.nyc3.digitaloceanspaces.com/About-Sing-for-Hope.mp4" type="video/mp4">
+			Your browser does not support HTML5 video.
+		</video>
+		<div class="absolute inset-0"
+			style="background: linear-gradient(180deg, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 1) 100%);"></div>
+
+
+		<button id="playPauseBtn" class="absolute top-0 right-0 z-50 bg-white opacity-50 p-2 rounded">
+			Pause
+		</button>
+
+
+	</div>
+	
+
+	<!-- Text and buttons at the bottom -->
+	<div class="z-20 flex items-end">
+		
+		
+		<div class="w-full py-10 p-0 md:p-4 lg:w-1/2" >
+			<h1 style="text-shadow: 2px 2px #000;"
+				class="block text-[32px] font-extrabold leading-9 text-white font-montserrat sm:text-4xl md:text-6xl lg:text-6xl">
+				Creating a better world through the arts.<span class="relative text-xl align-top top-1 right-1">™</span>
+			</h1>
+			<p style="text-shadow: 2px 2px #000;" class="pt-2 pr-6 text-md leading-tight text-white text-semibold">Our
+				creative programs
+				bring hope,
+				healing, and connection to millions of people worldwide.</p>
+
+			<!-- Buttons -->
+			<div class="flex flex-row items-center gap-2 my-3 sm:flex-row sm:gap-3 lg:mt-3">
+				<a href="/about">
+					<button type="button"
+						class="btn-harmony">
+						About Us
+					</button>
+				</a>
+				<a href="/contact">
+					<button type="button"
+						class="btn btn-ghost rounded-full">
+						Contact Us
+						<svg class="w-2.5 h-auto" width="17" height="16" viewBox="0 0 17 16" fill="none"
+							xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" clip-rule="evenodd"
+								d="M1 7C0.447715 7 -3.73832e-07 7.44771 -3.49691e-07 8C-3.2555e-07 8.55228 0.447715 9 1 9L13.0858 9L7.79289 14.2929C7.40237 14.6834 7.40237 15.3166 7.79289 15.7071C8.18342 16.0976 8.81658 16.0976 9.20711 15.7071L16.0303 8.88388C16.5185 8.39573 16.5185 7.60427 16.0303 7.11612L9.20711 0.292893C8.81658 -0.0976318 8.18342 -0.0976318 7.79289 0.292893C7.40237 0.683417 7.40237 1.31658 7.79289 1.70711L13.0858 7L1 7Z"
+								fill="currentColor" />
+						</svg>
+					</button>
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Wave SVG at the bottom -->
+	<svg class="z-40 editorial" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+		viewBox="0 24 150 28 " preserveAspectRatio="none">
+		<defs>
+			<path id="gentle-wave" d="M-160 44c30 0 
+				58-18 88-18s
+				58 18 88 18 
+				58-18 88-18 
+				58 18 88 18
+				v44h-352z" />
+		</defs>
+		<g class="parallax1">
+			<use xlink:href="#gentle-wave" x="50" y="3" fill="#54749E" />
+		</g>
+		<g class="parallax2">
+			<use xlink:href="#gentle-wave" x="50" y="0" fill="#DA4680" />
+		</g>
+		<g class="parallax3">
+			<use xlink:href="#gentle-wave" x="50" y="9" fill="#339933" />
+		</g>
+		<g class="parallax4">
+			<use xlink:href="#gentle-wave" x="50" y="6" fill="#FDD05E" />
+		</g>
+		<g class="parallax5">
+			<use xlink:href="#gentle-wave" x="50" y="12" fill="#fff" />
+		</g>
+	</svg>
+</div>
+
+
+<script client:load>
+  const video = document.getElementById('myVideo');
+  const playPauseBtn = document.getElementById('playPauseBtn');
+
+  playPauseBtn.addEventListener('click', () => {
+    if (video.paused) {
+      video.play();
+      playPauseBtn.textContent = 'Pause';
+    } else {
+      video.pause();
+      playPauseBtn.textContent = 'Play';
+    }
+  });
+</script>

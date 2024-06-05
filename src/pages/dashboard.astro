@@ -1,0 +1,26 @@
+---
+import Base from '../layout/Base.astro';
+---
+
+<Base title="Dashboard">
+  <div id="user-info">
+    Loading...
+  </div>
+</Base>
+
+<script type="module">
+  const fetchUserData = async () => {
+    const response = await fetch('/api/auth/auth');
+    const data = await response.json();
+
+    const userInfoDiv = document.getElementById('user-info');
+
+    if (response.ok) {
+      userInfoDiv.textContent = `Welcome, ${data.email}`;
+    } else {
+      userInfoDiv.textContent = 'Please log in.';
+    }
+  };
+
+  fetchUserData();
+</script>
